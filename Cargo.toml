@@ -1,0 +1,17 @@
+[package]
+name = "catch22_rust"
+version = "0.4.5"
+edition = "2021"
+
+[lib]
+name = "catch22_C"
+crate-type = ["cdylib"]
+path = "src/rust/lib.rs"
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+catch22 = { git = "https://github.com/irazza/catch22_rs.git" }
+
+[profile.release]
+lto = true
+codegen-units = 1

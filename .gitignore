@@ -8,3 +8,10 @@ build
 dist
 *.so
 .DS_Store
+target
+Cargo.lock
+
+
+# Added by cargo
+
+/target
