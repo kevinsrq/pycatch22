@@ -10,9 +10,20 @@
 
 ## About
 
-[_catch22_](https://github.com/DynamicsAndNeuralSystems/catch22) is a collection of 22 time-series features coded in C that can be run from Python, as well as [R](https://github.com/hendersontrent/Rcatch22), [Matlab](https://github.com/DynamicsAndNeuralSystems/catch22), and [Julia](https://github.com/brendanjohnharris/Catch22.jl).
+[_catch22_](https://github.com/DynamicsAndNeuralSystems/catch22) is a collection of 22 time-series features that can be run from Python, as well as [R](https://github.com/hendersontrent/Rcatch22), [Matlab](https://github.com/DynamicsAndNeuralSystems/catch22), and [Julia](https://github.com/brendanjohnharris/Catch22.jl).
 
 This package provides a python implementation as the module _pycatch22_, licensed under the [GNU GPL v3 license](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
+
+### Rust Backend
+
+**Version 0.4.5 and later:** This package now uses a Rust backend (via [PyO3](https://pyo3.rs/)) instead of the original C implementation. This provides:
+
+- **Better Performance**: Rust's zero-cost abstractions and aggressive optimizations
+- **Memory Safety**: Rust's ownership system prevents common bugs like null pointer dereferences
+- **Modern Build System**: Uses [maturin](https://www.maturin.rs/) for easier cross-platform builds
+- **API Compatibility**: The Python API remains exactly the same - no code changes needed!
+
+The Rust implementation is based on [catch22_rs](https://github.com/irazza/catch22_rs), which has been validated to produce identical results to the original C implementation.
 
 ### What do the features do?
 
@@ -97,9 +108,23 @@ Thanks to [@jmoo2880](https://github.com/jmoo2880) for putting together a [demon
 
 ### Manual install
 
-If you find issues with the `pip` install, you can also install using `setuptools`:
+If you find issues with the `pip` install, you can also build from source using `maturin`:
 
+```bash
+# Install maturin
+pip install maturin
+
+# Build and install
+maturin build --release
+pip install target/wheels/pycatch22-*.whl
 ```
-python3 setup.py build
-python3 setup.py install
+
+For development, you can use:
+
+```bash
+maturin develop
 ```
+
+#### Building the old C backend (legacy)
+
+The original C backend code is preserved in `src/C_legacy/` for reference, but is no longer used by default.

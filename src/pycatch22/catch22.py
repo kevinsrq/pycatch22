@@ -1,4 +1,4 @@
-import catch22_C
+from pycatch22 import catch22_C
 
 def catch22_all(data, catch24=False, short_names=False):
     '''
