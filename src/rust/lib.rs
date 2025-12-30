@@ -1,5 +1,6 @@
 use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
+use std::panic;
 
 // ---------------------------------------------------------------------
 // -------------------- Helper wrapper functions -----------------------
@@ -19,6 +20,14 @@ fn convert_py_list_to_vec(data: &Bound<'_, PyAny>) -> PyResult<Vec<f64>> {
     }
 }
 
+// Safe wrapper that catches panics and returns NaN
+// This handles edge cases like inf/nan in the data
+fn safe_compute(data: &[f64], feature_idx: usize) -> f64 {
+    panic::catch_unwind(|| {
+        catch22::compute(data, feature_idx)
+    }).unwrap_or(f64::NAN)
+}
+
 // ---------------------------------------------------------------------
 // ----------------------- Python wrapper functions --------------------
 // ---------------------------------------------------------------------
@@ -26,167 +35,167 @@ fn convert_py_list_to_vec(data: &Bound<'_, PyAny>) -> PyResult<Vec<f64>> {
 #[pyfunction]
 fn DN_Mean(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
-    Ok(catch22::compute(&vec_data, 22))
+    Ok(safe_compute(&vec_data, 22))
 }
 
 #[pyfunction]
 fn DN_Spread_Std(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
-    Ok(catch22::compute(&vec_data, 23))
+    Ok(safe_compute(&vec_data, 23))
 }
 
 #[pyfunction]
 fn DN_HistogramMode_5(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 2))
+    Ok(safe_compute(&normalized, 2))
 }
 
 #[pyfunction]
 fn DN_HistogramMode_10(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 3))
+    Ok(safe_compute(&normalized, 3))
 }
 
 #[pyfunction]
 fn CO_f1ecac(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 5))
+    Ok(safe_compute(&normalized, 5))
 }
 
 #[pyfunction]
 fn CO_FirstMin_ac(data: &Bound<'_, PyAny>) -> PyResult<i64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 6) as i64)
+    Ok(safe_compute(&normalized, 6) as i64)
 }
 
 #[pyfunction]
 fn CO_HistogramAMI_even_2_5(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 7))
+    Ok(safe_compute(&normalized, 7))
 }
 
 #[pyfunction]
 fn CO_trev_1_num(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 8))
+    Ok(safe_compute(&normalized, 8))
 }
 
 #[pyfunction]
 fn MD_hrv_classic_pnn40(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 12))
+    Ok(safe_compute(&normalized, 12))
 }
 
 #[pyfunction]
 fn SB_BinaryStats_mean_longstretch1(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 14))
+    Ok(safe_compute(&normalized, 14))
 }
 
 #[pyfunction]
 fn SB_TransitionMatrix_3ac_sumdiagcov(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 20))
+    Ok(safe_compute(&normalized, 20))
 }
 
 #[pyfunction]
 fn PD_PeriodicityWang_th0_01(data: &Bound<'_, PyAny>) -> PyResult<i64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 21) as i64)
+    Ok(safe_compute(&normalized, 21) as i64)
 }
 
 #[pyfunction]
 fn CO_Embed2_Dist_tau_d_expfit_meandiff(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 4))
+    Ok(safe_compute(&normalized, 4))
 }
 
 #[pyfunction]
 fn IN_AutoMutualInfoStats_40_gaussian_fmmi(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 11))
+    Ok(safe_compute(&normalized, 11))
 }
 
 #[pyfunction]
 fn FC_LocalSimple_mean1_tauresrat(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 9))
+    Ok(safe_compute(&normalized, 9))
 }
 
 #[pyfunction]
 fn DN_OutlierInclude_p_001_mdrmd(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 1))
+    Ok(safe_compute(&normalized, 1))
 }
 
 #[pyfunction]
 fn DN_OutlierInclude_n_001_mdrmd(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 0))
+    Ok(safe_compute(&normalized, 0))
 }
 
 #[pyfunction]
 fn SP_Summaries_welch_rect_area_5_1(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 18))
+    Ok(safe_compute(&normalized, 18))
 }
 
 #[pyfunction]
 fn SB_BinaryStats_diff_longstretch0(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 13))
+    Ok(safe_compute(&normalized, 13))
 }
 
 #[pyfunction]
 fn SB_MotifThree_quantile_hh(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 15))
+    Ok(safe_compute(&normalized, 15))
 }
 
 #[pyfunction]
 fn SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 16))
+    Ok(safe_compute(&normalized, 16))
 }
 
 #[pyfunction]
 fn SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 17))
+    Ok(safe_compute(&normalized, 17))
 }
 
 #[pyfunction]
 fn SP_Summaries_welch_rect_centroid(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 19))
+    Ok(safe_compute(&normalized, 19))
 }
 
 #[pyfunction]
 fn FC_LocalSimple_mean3_stderr(data: &Bound<'_, PyAny>) -> PyResult<f64> {
     let vec_data = convert_py_list_to_vec(data)?;
     let normalized = catch22::zscore(&vec_data);
-    Ok(catch22::compute(&normalized, 10))
+    Ok(safe_compute(&normalized, 10))
 }
 
 // ---------------------------------------------------------------------

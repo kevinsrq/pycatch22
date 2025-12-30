@@ -26,3 +26,7 @@ requires-python = ">=3.8"
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
+
+[tool.maturin]
+python-source = "src"
+module-name = "pycatch22.catch22_C"
